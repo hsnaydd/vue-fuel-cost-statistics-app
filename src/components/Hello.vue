@@ -1,52 +1,68 @@
 <template>
   <div class="hello">
+    <h1>Araç Yakıt Hesaplama</h1>
+    <h2>Count: {{countSquare}}</h2>
+    <button :class="'button'" @click="inc({ amount: 2 })">+</button>
+    <button :class="'button'" @click="desc({ amount: 1 })">-</button>
+    <hr style="margin-top: 30px;">
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="http://chat.vuejs.org/" target="_blank" rel="noopener">Vue Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="http://vuejs-templates.github.io/webpack/" target="_blank" rel="noopener">Docs for This Template</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <h4 v-if="seen">Lorem Ipsum</h4>
+    <h4>{{message}}</h4>
+    <h5>{{reversedMessage}}</h5>
+    <input type="text" v-model="question">
+    <h6>{{question}}</h6>
+
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+// import { types } from '../store';
+
 export default {
   name: 'hello',
   data() {
     return {
-      msg: 'Welcome to Your Vue.js PWA',
+      msg: 'Welcome to Your Vue.js App',
+      seen: false,
+      message: 'HASAN',
+      question: 'Sorunuz?',
     };
+  },
+  methods: {
+    test() {
+      console.log('Clicked !!!');
+    },
+
+    ...mapActions({
+      inc: 'increment',
+    }),
+
+    // ...mapMutations({
+    //   desc: types.DECRESCENT,
+    // }),
+  },
+
+  computed: {
+    // a computed getter
+    reversedMessage() {
+      // `this` points to the vm instance
+      return this.message
+        .split('')
+        .reverse()
+        .join('');
+    },
+
+    count() {
+      return this.$store.state.count;
+    },
+
+    ...mapGetters(['countSquare']),
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-h1, h2 {
-  font-weight: normal;
-}
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #35495E;
-}
 </style>
