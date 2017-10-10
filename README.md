@@ -30,5 +30,6 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 # Credits
 
 ## Icons
+
 Car Cost by [Symbolon](https://thenounproject.com/symbolon/) from the Noun Project
 Time by [Alfa Design](https://thenounproject.com/alfadesign) from the Noun Project
