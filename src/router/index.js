@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 // import Hello from '@/components/Hello';
-import Statistics from '../components/Statistics';
+import Statistics from '../components/Statistics/';
 import Routes from '../components/Routes/';
 import Entries from '../components/Entries/';
 import AddEntry from '../components/AddEntry';

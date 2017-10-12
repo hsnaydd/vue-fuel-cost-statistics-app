@@ -16,6 +16,19 @@ Vue.use(VeeValidate, {
   },
 });
 
+Vue.filter('currency', {
+  read(value, unit) {
+    return `${value.toFixed(2)} ${unit}`;
+  },
+  write(value) {
+    if (!value && typeof value !== 'number') {
+      return 0;
+    }
+
+    return value.toFixed(2);
+  },
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
