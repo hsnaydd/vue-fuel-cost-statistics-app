@@ -1,6 +1,29 @@
 <template>
   <div>
     <h1>İstatistikler</h1>
+    <div class="row justify-content-end align-items-center mb-4">
+      <div class="col-auto">
+        Filtreler
+      </div>
+      <div class="col-md-4">
+        <label for="filter-route" class="sr-only">Yol</label>
+        <select class="form-control" id="filter-route" v-model="filters.route" @change="onFilterRoute">
+          <option value="">Tüm Yollar</option>
+          <option v-for="route in routes" :value="route.id" :key="route.id">{{route.name}}</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="filter-path" class="sr-only">Yol</label>
+        <select class="form-control" id="filter-path">
+          <option value="">Tüm Zamanlar</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+    </div>
     <div class="row">
       <div class="col">
         <Card title="Ortalama Yakıt Maliyeti" :count="`${toFixed(averageCost)} TL`">
@@ -30,8 +53,8 @@
         </Card>
       </div>
     </div>
-    <EmptyState v-if="!entries.length" text="Yeterli kayıdınız bulunmamaktadır."></EmptyState>
-    <div class="table-responsive" v-if="entries.length">
+    <EmptyState v-if="!entryList.length" text="Yeterli kayıdınız bulunmamaktadır."></EmptyState>
+    <div class="table-responsive" v-if="entryList.length">
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
@@ -46,7 +69,7 @@
           </tr>
         </thead>
         <tbody>
-          <template v-for="entry in entries">
+          <template v-for="entry in entryList">
             <ListItem :entry="entry" v-bind:key="entry.id"></ListItem>
           </template>
         </tbody>
@@ -64,19 +87,33 @@ import ListItem from './ListItem';
 
 export default {
   data() {
-    return {};
+    return {
+      filters: {
+        route: ''
+      },
+      entryList: []
+    };
   },
+
   components: {
     Card,
     EmptyState,
     ListItem,
   },
+
+  created() {
+    if (this.$route.query.route) {
+      this.filters.route = this.$route.query.route
+    }
+    this.entryList = this.filterRoute();
+  },
+
   computed: {
     ...mapGetters('entries', ['entries']),
     ...mapGetters('routes', ['routes', 'getRouteById']),
 
     totalCost() {
-      const cost = this.entries.reduce((acc, cur) => {
+      const cost = this.entryList.reduce((acc, cur) => {
         acc += this.calculateCost(cur);
         return acc;
       }, 0);
@@ -84,7 +121,7 @@ export default {
     },
 
     averageCost() {
-      return this.totalCost ? this.totalCost / this.entries.length : 0;
+      return this.totalCost ? this.totalCost / this.entryList.length : 0;
     }
   },
 
@@ -99,9 +136,27 @@ export default {
       }
 
       return value.toFixed(2);
+    },
+
+    onFilterRoute() {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          route: this.filters.route === '' ? undefined : this.filters.route
+        }
+      }, () => {
+        this.entryList = this.filterRoute();
+      });
+    },
+
+    filterRoute() {
+      if (!this.filters.route) {
+        return this.entries;
+      }
+
+      return this.entries.filter(entry => entry.route.toString() === this.filters.route.toString())
     }
   }
 
 };
 </script>
-
