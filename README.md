@@ -27,9 +27,9 @@ npm test
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 
-# Credits
+# Credits
 
-## Icons
+## Icons
 
-Car Cost by [Symbolon](https://thenounproject.com/symbolon/) from the Noun Project
-Time by [Alfa Design](https://thenounproject.com/alfadesign) from the Noun Project
+- Car Cost by [Symbolon](https://thenounproject.com/symbolon/) from the Noun Project
+- Time by [Alfa Design](https://thenounproject.com/alfadesign) from the Noun Project
