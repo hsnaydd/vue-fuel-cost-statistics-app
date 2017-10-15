@@ -13,14 +13,10 @@
         </select>
       </div>
       <div class="col-md-4">
-        <label for="filter-path" class="sr-only">Yol</label>
-        <select class="form-control" id="filter-path">
+        <label for="filter-duration" class="sr-only">Yol</label>
+        <select class="form-control" id="filter-duration" v-model="filters.duration" @change="onFilterDuration">
           <option value="">Tüm Zamanlar</option>
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+          <option v-for="duration in durations" :key="duration.id" :value="duration.id">{{duration.label}}</option>
         </select>
       </div>
     </div>
@@ -89,9 +85,27 @@ export default {
   data() {
     return {
       filters: {
-        route: ''
+        route: '',
+        duration: '',
       },
-      entryList: []
+      entryList: [],
+      durations: [
+        {
+          id: 1,
+          label: 'Son 1 gün',
+          days: 1,
+        },
+        {
+          id: 2,
+          label: 'Son 7 gün',
+          days: 7,
+        },
+        {
+          id: 3,
+          label: 'Son 30 gün',
+          days: 30,
+        }
+      ]
     };
   },
 
@@ -103,9 +117,13 @@ export default {
 
   created() {
     if (this.$route.query.route) {
-      this.filters.route = this.$route.query.route
+      this.filters.route = parseInt(this.$route.query.route)
+    }
+    if (this.$route.query.duration) {
+      this.filters.duration = parseInt(this.$route.query.duration)
     }
     this.entryList = this.filterRoute();
+    this.entryList = this.filterDuration();
   },
 
   computed: {
@@ -138,6 +156,17 @@ export default {
       return value.toFixed(2);
     },
 
+    onFilterDuration() {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          duration: this.filters.duration === '' ? undefined : this.filters.duration
+        }
+      }, () => {
+        this.entryList = this.filterDuration();
+      });
+    },
+
     onFilterRoute() {
       this.$router.push({
         query: {
@@ -154,7 +183,24 @@ export default {
         return this.entries;
       }
 
-      return this.entries.filter(entry => entry.route.toString() === this.filters.route.toString())
+      return this.entries.filter(entry => entry.route === this.filters.route);
+    },
+
+    filterDuration() {
+      if (!this.filters.duration) {
+        return this.entries;
+      }
+
+      const today = new Date();
+      const duration = this.durations.find(dur => dur.id === this.filters.duration);
+      const filterTime = today.setDate(today.getDate() - duration.days);
+
+      return this.entries.filter(entry => {
+        const entryTime = new Date(entry.date).getTime();
+        if (entryTime > filterTime) {
+          return entry;
+        }
+      });
     }
   }
 
