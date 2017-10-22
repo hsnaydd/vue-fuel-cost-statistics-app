@@ -42,7 +42,7 @@
         </Card>
       </div>
       <div class="col">
-        <Card title="Ortalama yolculuk süresi" count="30 Dk">
+        <Card title="Ortalama yolculuk süresi" :count="`${averageCruisingTime} dk`">
           <svg width="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" slot="icon">
             <path fill="#868e96" fill-rule="nonzero" d="M28 0C12.56 0 0 12.56 0 28s12.56 28 28 28 28-12.56 28-28S43.44 0 28 0zm0 4c13.28 0 24 10.722 24 24S41.28 52 28 52C14.722 52 4 41.278 4 28S14.722 4 28 4zm0 6c-1.105 0-2 .895-2 2v16c0 1.105.895 2 2 2h14c1.105 0 2-.895 2-2s-.895-2-2-2H30V12c0-1.105-.895-2-2-2z" />
           </svg>
@@ -104,8 +104,8 @@ export default {
           id: 3,
           label: 'Son 30 gün',
           days: 30,
-        }
-      ]
+        },
+      ],
     };
   },
 
@@ -117,10 +117,10 @@ export default {
 
   created() {
     if (this.$route.query.route) {
-      this.filters.route = parseInt(this.$route.query.route)
+      this.filters.route = parseInt(this.$route.query.route);
     }
     if (this.$route.query.duration) {
-      this.filters.duration = parseInt(this.$route.query.duration)
+      this.filters.duration = parseInt(this.$route.query.duration);
     }
     this.entryList = this.filterRoute();
     this.entryList = this.filterDuration();
@@ -140,42 +140,63 @@ export default {
 
     averageCost() {
       return this.totalCost ? this.totalCost / this.entryList.length : 0;
-    }
+    },
+
+    averageCruisingTime() {
+      const result = this.entryList.reduce(
+        (acc, cur) => {
+          if (cur.cruisingTime) {
+            acc.total += cur.cruisingTime;
+            acc.count++;
+          }
+          return acc;
+        },
+        { total: 0, count: 0 },
+      );
+
+      return Math.round(result.total / result.count);
+    },
   },
 
   methods: {
     calculateCost(entry) {
-      return (entry.distance * entry.averageFuel * entry.fuelPrice / 100);
+      return entry.distance * entry.averageFuel * entry.fuelPrice / 100;
     },
 
     toFixed(value) {
       if (!value || isNaN(value)) {
-        return 0
+        return 0;
       }
 
       return value.toFixed(2);
     },
 
     onFilterDuration() {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          duration: this.filters.duration === '' ? undefined : this.filters.duration
-        }
-      }, () => {
-        this.entryList = this.filterDuration();
-      });
+      this.$router.push(
+        {
+          query: {
+            ...this.$route.query,
+            duration: this.filters.duration === '' ? undefined : this.filters.duration,
+          },
+        },
+        () => {
+          this.entryList = this.filterDuration();
+        },
+      );
     },
 
     onFilterRoute() {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          route: this.filters.route === '' ? undefined : this.filters.route
-        }
-      }, () => {
-        this.entryList = this.filterRoute();
-      });
+      this.$router.push(
+        {
+          query: {
+            ...this.$route.query,
+            route: this.filters.route === '' ? undefined : this.filters.route,
+          },
+        },
+        () => {
+          this.entryList = this.filterRoute();
+        },
+      );
     },
 
     filterRoute() {
@@ -201,8 +222,7 @@ export default {
           return entry;
         }
       });
-    }
-  }
-
+    },
+  },
 };
 </script>
