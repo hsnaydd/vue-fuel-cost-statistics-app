@@ -154,7 +154,9 @@ export default {
         { total: 0, count: 0 },
       );
 
-      return Math.round(result.total / result.count);
+      const average = Math.round(result.total / result.count);
+
+      return isNaN(average) ? '-' : average;
     },
   },
 
