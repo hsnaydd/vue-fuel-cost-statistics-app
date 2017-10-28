@@ -1,0 +1,11 @@
+:root {
+  --color-abbey: #495057;
+  --color-oslo-gray: #868e96;
+  --color-athens-gray: #f8f9fa;
+  --color-athens-gray1: #f1f3f5;
+  --color-athens-gray2: #e9ecef;
+}
+
+.u-flex-full {
+  flex: 1;
+}
