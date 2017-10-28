@@ -116,14 +116,14 @@ export default {
   },
 
   created() {
-    if (this.$route.query.route) {
-      this.filters.route = parseInt(this.$route.query.route);
-    }
-    if (this.$route.query.duration) {
-      this.filters.duration = parseInt(this.$route.query.duration);
-    }
-    this.entryList = this.filterRoute();
-    this.entryList = this.filterDuration();
+    const filters = this.$route.query;
+
+    this.updateFilters(filters);
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.updateFilters(to.query);
+    next();
   },
 
   computed: {
@@ -173,56 +173,56 @@ export default {
       return value.toFixed(2);
     },
 
+    updateFilters(filters) {
+      Object.keys(filters).forEach(filter => {
+        const value = filters[filter];
+        this.filters[filter] = value ? parseInt(filters[filter]) : '';
+      });
+
+      this.filter();
+    },
+
+    filter() {
+      const { filters, durations } = this;
+      const today = new Date();
+      let duration;
+      let filterTime;
+
+      if (filters.duration) {
+        duration = durations.find(dur => dur.id === filters.duration);
+        filterTime = today.setDate(today.getDate() - duration.days);
+      }
+
+      this.entryList = this.entries.filter(entry => {
+        const entryTime = new Date(entry.date).getTime();
+
+        if (filters.route && entry.route !== this.filters.route) {
+          return;
+        }
+
+        if (filters.duration && entryTime <= filterTime) {
+          return;
+        }
+
+        return entry;
+      });
+    },
+
     onFilterDuration() {
-      this.$router.push(
-        {
-          query: {
-            ...this.$route.query,
-            duration: this.filters.duration === '' ? undefined : this.filters.duration,
-          },
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          duration: this.filters.duration === '' ? undefined : this.filters.duration,
         },
-        () => {
-          this.entryList = this.filterDuration();
-        },
-      );
+      });
     },
 
     onFilterRoute() {
-      this.$router.push(
-        {
-          query: {
-            ...this.$route.query,
-            route: this.filters.route === '' ? undefined : this.filters.route,
-          },
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          route: this.filters.route === '' ? undefined : this.filters.route,
         },
-        () => {
-          this.entryList = this.filterRoute();
-        },
-      );
-    },
-
-    filterRoute() {
-      if (!this.filters.route) {
-        return this.entries;
-      }
-
-      return this.entries.filter(entry => entry.route === this.filters.route);
-    },
-
-    filterDuration() {
-      if (!this.filters.duration) {
-        return this.entries;
-      }
-
-      const today = new Date();
-      const duration = this.durations.find(dur => dur.id === this.filters.duration);
-      const filterTime = today.setDate(today.getDate() - duration.days);
-
-      return this.entries.filter(entry => {
-        const entryTime = new Date(entry.date).getTime();
-        if (entryTime > filterTime) {
-          return entry;
-        }
       });
     },
   },
