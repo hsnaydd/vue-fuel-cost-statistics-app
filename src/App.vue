@@ -2,7 +2,7 @@
   <div>
     <header>
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="#">Dashboard</a>
+        <a class="navbar-brand" href="/">Yakıt Maliyet İzleme</a>
       </nav>
     </header>
 
@@ -73,7 +73,7 @@ h1 {
   width: 100%;
 }
 
-.sidebar .nav-item+.nav-item {
+.sidebar .nav-item + .nav-item {
   margin-left: 0;
 }
 
