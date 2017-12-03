@@ -1,8 +1,24 @@
 <template>
   <div>
     <header>
-      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <nav class="navbar navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="">Yakıt Maliyet İzleme</a>
+        <button class="navbar-toggler d-sm-none" type="button" @click="isNavbarActive = !isNavbarActive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" :class="{ 'show': isNavbarActive }" >
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <router-link class="nav-link" to="/">İstatistikler</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/routes">Yollarım</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/entries">Kayıtlarım</router-link>
+            </li>
+          </ul>
+        </div>
       </nav>
     </header>
 
@@ -33,6 +49,11 @@
 <script>
 export default {
   name: 'app',
+  data() {
+    return {
+      isNavbarActive: false,
+    };
+  },
 };
 </script>
 
@@ -92,6 +113,13 @@ h1 {
 
 .router-link-exact-active {
   color: #fff;
+}
+
+.nav-pills .router-link-exact-active {
   background-color: #007bff;
+}
+
+.navbar-dark .navbar-nav .router-link-exact-active {
+  color: #fff;
 }
 </style>
